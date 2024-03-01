@@ -1,5 +1,6 @@
 import { ThemeProvider } from "styled-components";
 import { defaultTheme } from "./styles/themes/default";
+import { GlobalStyle } from "./styles/global";
 
 export default function App() {
   return (
@@ -7,6 +8,7 @@ export default function App() {
       <h1>
         Hi
       </h1>
+      <GlobalStyle />
     </ThemeProvider>
   )
 }
