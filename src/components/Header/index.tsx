@@ -7,10 +7,10 @@ export default function Header() {
     <HeaderContainer>
       <Fire size={40} />
       <nav>
-        <NavLink to='/'>
+        <NavLink to='/' title='Timer'>
           <Timer size={28} />
         </NavLink>
-        <NavLink to='/history'>
+        <NavLink to='/history' title='History'>
           <Scroll size={28} />
         </NavLink>
       </nav>
