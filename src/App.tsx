@@ -5,9 +5,6 @@ import {GlobalStyle} from './styles/global';
 export default function App() {
 	return (
 		<ThemeProvider theme={defaultTheme}>
-			<h1>
-        Hi
-			</h1>
 			<GlobalStyle />
 		</ThemeProvider>
 	);
