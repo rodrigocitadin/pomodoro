@@ -12,7 +12,7 @@ export default function Home() {
           <MinutesAmountInput
             type="number"
             id="minutes"
-            placeholder="00"
+            placeholder="0"
             step={5}
             min={5}
             max={60}

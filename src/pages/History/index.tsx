@@ -1,7 +1,44 @@
+import { HistoryContainer, HistoryList } from "./styles";
+
 export default function History() {
-	return (
-		<h1>
-      History
-		</h1>
-	);
+  return (
+    <HistoryContainer>
+      <h1>
+        My History
+      </h1>
+
+      <HistoryList>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Duration</th>
+              <th>Start</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Task name</td>
+              <td>20 minutes</td>
+              <td>2 months ago</td>
+              <td>Finished</td>
+            </tr>
+            <tr>
+              <td>Task name</td>
+              <td>30 minutes</td>
+              <td>4 months ago</td>
+              <td>Paused</td>
+            </tr>
+            <tr>
+              <td>Task name</td>
+              <td>15 minutes</td>
+              <td>7 months ago</td>
+              <td>Stopped</td>
+            </tr>
+          </tbody>
+        </table>
+      </HistoryList>
+    </HistoryContainer>
+  );
 }
