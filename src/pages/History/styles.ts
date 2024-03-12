@@ -60,3 +60,26 @@ export const HistoryList = styled.div`
     }
   }
 `
+
+const STATUS_KIND = {
+  paused: 'yellow-500',
+  done: 'green-500',
+  stopped: 'red-500',
+} as const
+
+interface StatusKind { kind: keyof typeof STATUS_KIND };
+
+export const Status = styled.span<StatusKind>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 100%;
+    background: ${props => props.theme[STATUS_KIND[props.kind]]};
+  }
+`;
+
