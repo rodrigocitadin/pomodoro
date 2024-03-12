@@ -1,13 +1,20 @@
 import { Play } from "phosphor-react";
 import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, Separator, StartCountdownButton, TaskInput } from "./styles";
+import { useForm } from "react-hook-form";
 
 export default function Home() {
+  const { register, handleSubmit } = useForm();
+
   return (
     <HomeContainer>
       <form>
         <FormContainer>
           <label htmlFor="task">I will work in</label>
-          <TaskInput id="task" placeholder="Task name" />
+          <TaskInput
+            id="task"
+            placeholder="Task name"
+            {...register('task')}
+          />
           <label htmlFor="minutes">during</label>
           <MinutesAmountInput
             type="number"
@@ -16,6 +23,7 @@ export default function Home() {
             step={5}
             min={5}
             max={60}
+            {...register('time')}
           />
           <span>minutes</span>
         </FormContainer>
