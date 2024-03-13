@@ -3,11 +3,14 @@ import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, S
 import { useForm } from "react-hook-form";
 
 export default function Home() {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm();
 
   function handleNewCycle(data: any) {
     console.log(data);
   }
+
+  const task = watch('task');
+  const time = watch('time');
 
   return (
     <HomeContainer>
@@ -40,7 +43,7 @@ export default function Home() {
           <span>0</span>
         </CountdownContainer>
 
-        <StartCountdownButton disabled type="submit">
+        <StartCountdownButton disabled={!(task && time)} type="submit">
           <Play size={28} />
         </StartCountdownButton>
       </form>
