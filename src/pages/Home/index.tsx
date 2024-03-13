@@ -88,6 +88,7 @@ export default function Home() {
           <TaskInput
             id="task"
             placeholder="Task name"
+            disabled={!!activeCycle}
             {...register('task')}
           />
           <label htmlFor="minutes">during</label>
@@ -98,6 +99,7 @@ export default function Home() {
             step={5}
             min={5}
             max={60}
+            disabled={!!activeCycle}
             {...register('timeInMin', { valueAsNumber: true })}
           />
           <span>minutes</span>
