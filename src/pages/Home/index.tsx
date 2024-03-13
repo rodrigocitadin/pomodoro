@@ -94,11 +94,8 @@ export default function Home() {
           }))
 
           setActiveCycleId(null);
-          console.log('a')
+          clearInterval(interval);
         }
-
-
-        console.log(interval, 'bb')
       }, 1000)
     }
 
