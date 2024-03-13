@@ -8,7 +8,7 @@ import { differenceInSeconds } from "date-fns";
 
 const schema = z.object({
   task: z.string().min(1, 'Name your task'),
-  timeInMin: z.number().min(5).max(60)
+  timeInMin: z.number().min(1).max(60)
 });
 
 type FormDataType = z.infer<typeof schema>;
@@ -83,24 +83,27 @@ export default function Home() {
 
     if (activeCycle) {
       interval = setInterval(() => {
-        const secondsDiff = differenceInSeconds(new Date(), activeCycle.date);
-        setSecondsPassed(secondsDiff);
+        setSecondsPassed(differenceInSeconds(new Date(), activeCycle.date));
 
-        if (secondsDiff >= seconds) {
+        if (currentTimeInSec <= 0) {
           setCycles(state => state.map(state => {
+            console.log(state)
             return state.id === activeCycleId
               ? { ...state, finishedDate: new Date() }
               : state;
-          })
-          )
+          }))
 
-          clearInterval(interval);
+          setActiveCycleId(null);
+          console.log('a')
         }
+
+
+        console.log(interval, 'bb')
       }, 1000)
     }
 
     return () => clearInterval(interval);
-  }, [activeCycle, activeCycleId, seconds])
+  }, [activeCycle, activeCycleId, currentTimeInSec])
 
   useEffect(() => {
     if (activeCycle) document.title = `${minutes}:${secondsDisplay} - Pomotimer`
@@ -123,7 +126,7 @@ export default function Home() {
             id="time"
             placeholder="0"
             step={5}
-            min={5}
+            min={1}
             max={60}
             disabled={!!activeCycle}
             {...register('timeInMin', { valueAsNumber: true })}
