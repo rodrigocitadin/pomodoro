@@ -76,6 +76,10 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [activeCycle])
 
+  useEffect(() => {
+    if (activeCycle) document.title = `${minutes}:${secondsDisplay} - Pomotimer`
+  }, [minutes, seconds, activeCycle])
+
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleNewCycle)}>
