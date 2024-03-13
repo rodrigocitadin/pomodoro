@@ -5,21 +5,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from 'zod';
 
 export default function Home() {
-  function handleNewCycle(data: any) {
-    console.log(data);
-  }
-
   const schema = z.object({
     task: z.string().min(1, 'Name your task'),
     time: z.number().min(5).max(60)
-  })
+  });
+
+  type FormDataType = z.infer<typeof schema>;
 
   const { register, handleSubmit, watch } = useForm({
-    resolver: zodResolver(schema)
+    resolver: zodResolver(schema),
+    defaultValues: {
+      task: '',
+      time: 0
+    }
   });
 
   const task = watch('task');
   const time = watch('time');
+
+  function handleNewCycle(data: FormDataType) {
+    console.log(data);
+  }
 
   return (
     <HomeContainer>
@@ -34,7 +40,7 @@ export default function Home() {
           <label htmlFor="minutes">during</label>
           <MinutesAmountInput
             type="number"
-            id="minutes"
+            id="time"
             placeholder="0"
             step={5}
             min={5}
