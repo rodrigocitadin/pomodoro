@@ -64,10 +64,6 @@ const BaseInput = styled.input`
       box-shadow: none;
       border-color: ${props => props.theme["orange-500"]};
   }
-
-  &::placeholder {
-    color: ${props => props.theme["orange-500"]};
-  }
 `
 
 export const TaskInput = styled(BaseInput)`
