@@ -18,7 +18,8 @@ interface Cycle {
   task: string
   timeInMin: number,
   date: Date,
-  interruptedDate?: Date
+  interruptedDate?: Date,
+  finishedDate?: Date
 }
 
 export default function Home() {
@@ -67,9 +68,9 @@ export default function Home() {
 
   function handleInterruptCycle() {
     setCycles(
-      cycles.map(cycle => {
-        if (cycle.id === activeCycleId) return { ...cycle, interruptedDate: new Date() };
-        return cycle;
+      cycles.map(state => {
+        if (state.id === activeCycleId) return { ...state, interruptedDate: new Date() };
+        return state;
       })
     )
 
@@ -82,12 +83,22 @@ export default function Home() {
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setSecondsPassed(differenceInSeconds(new Date(), activeCycle.date))
-      })
+        const secondsDiff = differenceInSeconds(new Date(), activeCycle.date);
+        setSecondsPassed(secondsDiff);
+
+        if (secondsDiff >= seconds) {
+          setCycles(state => state.map(state => {
+            return state.id === activeCycleId
+              ? { ...state, finishedDate: new Date() }
+              : state;
+          })
+          )
+        }
+      }, 1000)
     }
 
     return () => clearInterval(interval);
-  }, [activeCycle])
+  }, [activeCycle, activeCycleId, seconds])
 
   useEffect(() => {
     if (activeCycle) document.title = `${minutes}:${secondsDisplay} - Pomotimer`
