@@ -17,7 +17,8 @@ interface Cycle {
   id: string
   task: string
   timeInMin: number,
-  date: Date
+  date: Date,
+  interruptedDate?: Date
 }
 
 export default function Home() {
@@ -63,6 +64,18 @@ export default function Home() {
 
     reset();
   }
+
+  function handleInterruptCycle() {
+    setCycles(
+      cycles.map(cycle => {
+        if (cycle.id === activeCycleId) return { ...cycle, interruptedDate: new Date() };
+        return cycle;
+      })
+    )
+
+    setActiveCycleId(null);
+  }
+
 
   useEffect(() => {
     let interval: number;
@@ -116,7 +129,7 @@ export default function Home() {
         {
           activeCycle
             ? (
-              <StopCountdownButton type="button">
+              <StopCountdownButton onClick={handleInterruptCycle} type="button">
                 <Stop size={28} />
               </StopCountdownButton>
             ) : (
