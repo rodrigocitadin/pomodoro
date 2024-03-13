@@ -3,28 +3,48 @@ import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, S
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from 'zod';
+import { useState } from "react";
+
+const schema = z.object({
+  task: z.string().min(1, 'Name your task'),
+  timeInSec: z.number().min(5).max(60)
+});
+
+type FormDataType = z.infer<typeof schema>;
+
+interface Cycle {
+  id: string
+  task: string
+  timeInMin: number
+}
 
 export default function Home() {
-  const schema = z.object({
-    task: z.string().min(1, 'Name your task'),
-    time: z.number().min(5).max(60)
-  });
-
-  type FormDataType = z.infer<typeof schema>;
+  const [cycles, setCycles] = useState<Cycle[]>([]);
+  const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
 
   const { register, handleSubmit, watch, reset } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       task: '',
-      time: 0
+      timeInSec: 0
     }
   });
 
   const task = watch('task');
-  const time = watch('time');
+  const timeInSec = watch('timeInSec');
 
   function handleNewCycle(data: FormDataType) {
-    console.log(data);
+    const id = String(new Date().getTime());
+
+    const newCycle: Cycle = {
+      id,
+      task: data.task,
+      timeInMin: data.timeInSec
+    };
+
+    setCycles(state => [...state, newCycle]);
+    setActiveCycleId(id);
+
     reset();
   }
 
@@ -46,7 +66,7 @@ export default function Home() {
             step={5}
             min={5}
             max={60}
-            {...register('time', { valueAsNumber: true })}
+            {...register('timeInSec', { valueAsNumber: true })}
           />
           <span>minutes</span>
         </FormContainer>
@@ -59,7 +79,7 @@ export default function Home() {
           <span>0</span>
         </CountdownContainer>
 
-        <StartCountdownButton disabled={!(task && time)} type="submit">
+        <StartCountdownButton disabled={!(task && timeInSec)} type="submit">
           <Play size={28} />
         </StartCountdownButton>
       </form>
