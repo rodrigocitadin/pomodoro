@@ -59,16 +59,21 @@ export default function Home() {
 
     setCycles(state => [...state, newCycle]);
     setActiveCycleId(id);
+    setSecondsPassed(0);
 
     reset();
   }
 
   useEffect(() => {
+    let interval: number;
+
     if (activeCycle) {
-      setInterval(() => {
+      interval = setInterval(() => {
         setSecondsPassed(differenceInSeconds(new Date(), activeCycle.date))
       })
     }
+
+    return () => clearInterval(interval);
   }, [activeCycle])
 
   return (
