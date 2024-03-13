@@ -5,9 +5,13 @@ import { useForm } from "react-hook-form";
 export default function Home() {
   const { register, handleSubmit } = useForm();
 
+  function handleNewCycle(data: any) {
+    console.log(data);
+  }
+
   return (
     <HomeContainer>
-      <form>
+      <form onSubmit={handleSubmit(handleNewCycle)}>
         <FormContainer>
           <label htmlFor="task">I will work in</label>
           <TaskInput
@@ -23,7 +27,7 @@ export default function Home() {
             step={5}
             min={5}
             max={60}
-            {...register('time')}
+            {...register('time', { valueAsNumber: true })}
           />
           <span>minutes</span>
         </FormContainer>
