@@ -5,10 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from 'zod';
 import { useEffect, useState } from "react";
 import { differenceInSeconds } from "date-fns";
+import Countdown from "./components/Countdown";
+import NewCycleForm from "./components/NewCycleForm";
 
 const schema = z.object({
   task: z.string().min(1, 'Name your task'),
-  timeInMin: z.number().min(1).max(60)
+  timeInMin: z.number().min(5).max(60)
 });
 
 type FormDataType = z.infer<typeof schema>;
@@ -36,19 +38,6 @@ export default function Home() {
     }
   });
 
-  const activeCycle = cycles.find(c => c.id === activeCycleId);
-  const timeInSec = activeCycle ? activeCycle.timeInMin * 60 : 0;
-  const currentTimeInSec = activeCycle ? timeInSec - secondsPassed : 0;
-
-  const minutes = Math.floor(currentTimeInSec / 60);
-  const seconds = currentTimeInSec % 60;
-
-  const minutesDisplay = String(minutes).padStart(2, '0');
-  const secondsDisplay = String(seconds).padStart(2, '0');
-
-  const task = watch('task');
-  const timeInMin = watch('timeInMin');
-
   function handleNewCycle(data: FormDataType) {
     const id = String(new Date().getTime());
 
@@ -65,6 +54,20 @@ export default function Home() {
 
     reset();
   }
+
+  const activeCycle = cycles.find(c => c.id === activeCycleId);
+  const timeInSec = activeCycle ? activeCycle.timeInMin * 60 : 0;
+  const currentTimeInSec = activeCycle ? timeInSec - secondsPassed : 0;
+
+  const minutes = Math.floor(currentTimeInSec / 60);
+  const seconds = currentTimeInSec % 60;
+
+  const minutesDisplay = String(minutes).padStart(2, '0');
+  const secondsDisplay = String(seconds).padStart(2, '0');
+
+  const task = watch('task');
+  const timeInMin = watch('timeInMin');
+
 
   function handleInterruptCycle() {
     setCycles(
@@ -108,50 +111,25 @@ export default function Home() {
 
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(handleNewCycle)}>
-        <FormContainer>
-          <label htmlFor="task">I will work in</label>
-          <TaskInput
-            id="task"
-            placeholder="Task name"
-            disabled={!!activeCycle}
-            {...register('task')}
-          />
-          <label htmlFor="minutes">during</label>
-          <MinutesAmountInput
-            type="number"
-            id="time"
-            placeholder="0"
-            step={5}
-            min={1}
-            max={60}
-            disabled={!!activeCycle}
-            {...register('timeInMin', { valueAsNumber: true })}
-          />
-          <span>minutes</span>
-        </FormContainer>
+      <NewCycleForm />
 
-        <CountdownContainer>
-          <span>{minutesDisplay[0]}</span>
-          <span>{minutesDisplay[1]}</span>
-          <Separator>:</Separator>
-          <span>{secondsDisplay[0]}</span>
-          <span>{secondsDisplay[1]}</span>
-        </CountdownContainer>
+      <Countdown
+        minutesDisplay={minutesDisplay}
+        secondsDisplay={secondsDisplay}
+      />
 
-        {
-          activeCycle
-            ? (
-              <StopCountdownButton onClick={handleInterruptCycle} type="button">
-                <Stop size={28} />
-              </StopCountdownButton>
-            ) : (
-              <StartCountdownButton disabled={!(task && timeInMin)} type="submit">
-                <Play size={28} />
-              </StartCountdownButton>
-            )
-        }
-      </form>
-    </HomeContainer>
+      {
+        activeCycle
+          ? (
+            <StopCountdownButton onClick={handleInterruptCycle} type="button">
+              <Stop size={28} />
+            </StopCountdownButton>
+          ) : (
+            <StartCountdownButton disabled={!(task && timeInMin)} type="submit">
+              <Play size={28} />
+            </StartCountdownButton>
+          )
+      }
+    </HomeContainer >
   );
 }
