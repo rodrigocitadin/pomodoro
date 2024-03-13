@@ -69,7 +69,7 @@ export default function Home() {
         setSecondsPassed(differenceInSeconds(new Date(), activeCycle.date))
       })
     }
-  })
+  }, [activeCycle])
 
   return (
     <HomeContainer>
