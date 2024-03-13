@@ -93,6 +93,8 @@ export default function Home() {
               : state;
           })
           )
+
+          clearInterval(interval);
         }
       }, 1000)
     }
