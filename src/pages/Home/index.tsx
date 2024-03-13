@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const schema = z.object({
   task: z.string().min(1, 'Name your task'),
-  timeInSec: z.number().min(5).max(60)
+  timeInMin: z.number().min(5).max(60)
 });
 
 type FormDataType = z.infer<typeof schema>;
@@ -21,17 +21,28 @@ interface Cycle {
 export default function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]);
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
+  const [secondsPassed, setSecondsPassed] = useState(0);
 
   const { register, handleSubmit, watch, reset } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       task: '',
-      timeInSec: 0
+      timeInMin: 0
     }
   });
 
+  const activeCycle = cycles.find(c => c.id === activeCycleId);
+  const timeInSec = activeCycle ? activeCycle.timeInMin * 60 : 0;
+  const currentTimeInSec = activeCycle ? timeInSec - secondsPassed : 0;
+
+  const minutes = Math.floor(currentTimeInSec / 60);
+  const seconds = currentTimeInSec % 60;
+
+  const minutesDisplay = String(minutes).padStart(2, '0');
+  const secondsDisplay = String(seconds).padStart(2, '0');
+
   const task = watch('task');
-  const timeInSec = watch('timeInSec');
+  const timeInMin = watch('timeInMin');
 
   function handleNewCycle(data: FormDataType) {
     const id = String(new Date().getTime());
@@ -39,7 +50,7 @@ export default function Home() {
     const newCycle: Cycle = {
       id,
       task: data.task,
-      timeInMin: data.timeInSec
+      timeInMin: data.timeInMin
     };
 
     setCycles(state => [...state, newCycle]);
@@ -66,20 +77,20 @@ export default function Home() {
             step={5}
             min={5}
             max={60}
-            {...register('timeInSec', { valueAsNumber: true })}
+            {...register('timeInMin', { valueAsNumber: true })}
           />
           <span>minutes</span>
         </FormContainer>
 
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{minutesDisplay[0]}</span>
+          <span>{minutesDisplay[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{secondsDisplay[0]}</span>
+          <span>{secondsDisplay[1]}</span>
         </CountdownContainer>
 
-        <StartCountdownButton disabled={!(task && timeInSec)} type="submit">
+        <StartCountdownButton disabled={!(task && timeInMin)} type="submit">
           <Play size={28} />
         </StartCountdownButton>
       </form>
