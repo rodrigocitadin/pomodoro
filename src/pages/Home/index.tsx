@@ -1,13 +1,22 @@
 import { Play } from "phosphor-react";
 import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, Separator, StartCountdownButton, TaskInput } from "./styles";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from 'zod';
 
 export default function Home() {
-  const { register, handleSubmit, watch } = useForm();
-
   function handleNewCycle(data: any) {
     console.log(data);
   }
+
+  const schema = z.object({
+    task: z.string().min(1, 'Name your task'),
+    time: z.number().min(5).max(60)
+  })
+
+  const { register, handleSubmit, watch } = useForm({
+    resolver: zodResolver(schema)
+  });
 
   const task = watch('task');
   const time = watch('time');
