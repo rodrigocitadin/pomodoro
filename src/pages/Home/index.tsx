@@ -13,8 +13,10 @@ const schema = z.object({
   timeInMin: z.number().min(1).max(60)
 });
 
+type FormData = z.infer<typeof schema>
+
 export default function Home() {
-  const {activeCycle, createNewCycle, interruptCycle} = useContext(CycleContext);
+  const { activeCycle, createNewCycle, interruptCycle } = useContext(CycleContext);
 
   const cycleForm = useForm({
     resolver: zodResolver(schema),
@@ -25,14 +27,19 @@ export default function Home() {
     }
   });
 
-  const { handleSubmit, watch } = cycleForm;
+  const { handleSubmit, watch, reset } = cycleForm;
 
   const task = watch('task');
   const timeInMin = watch('timeInMin');
 
+  function handleCreateNewCycle(data: FormData) {
+    createNewCycle(data);
+    reset();
+  }
+
   return (
     <HomeContainer>
-      <form onSubmit={handleSubmit(createNewCycle)}>
+      <form onSubmit={handleSubmit(handleCreateNewCycle)}>
         <FormProvider {...cycleForm}>
           <NewCycleForm />
         </FormProvider>
