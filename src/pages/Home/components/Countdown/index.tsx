@@ -1,9 +1,6 @@
 import { CountdownContainer, Separator } from "./styles";
 
-export default function Countdown({minutesDisplay, secondsDisplay} : {
-  minutesDisplay: string,
-  secondsDisplay: string
-}) {
+export default function Countdown() {
   return (
     <CountdownContainer>
       <span>{minutesDisplay[0]}</span>
