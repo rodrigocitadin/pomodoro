@@ -1,17 +1,9 @@
 import { ReactNode, createContext, useReducer, useState } from "react"
+import cyclesReducer, { Cycle, CycleActions } from "../reducers/cycles"
 
 interface CycleData {
   task: string
   timeInMin: number
-}
-
-export interface Cycle {
-  id: string
-  task: string
-  timeInMin: number,
-  date: Date,
-  interruptedDate?: Date,
-  finishedDate?: Date
 }
 
 interface CycleContextType {
@@ -25,46 +17,10 @@ interface CycleContextType {
   setSecondsPassedProxy: (n: number) => void
 }
 
-interface CyclesState {
-  cycles: Cycle[]
-  activeCycleId: string | null
-}
-
 export const CycleContext = createContext({} as CycleContextType)
 
 export function CycleContextProvider({ children }: { children: ReactNode }) {
-  const [cyclesState, dispatch] = useReducer((state: CyclesState, action: any) => {
-    switch (action.type) {
-      case 'ADD_CYCLE':
-        return {
-          cycles: [...state.cycles, action.payload.newCycle],
-          activeCycleId: action.payload.newCycle.id
-        }
-
-      case 'FINISH_CYCLE':
-        return {
-          cycles: state.cycles.map(cycles => {
-            return cycles.id === state.activeCycleId
-              ? { ...cycles, finishedDate: new Date() }
-              : cycles;
-          }),
-          activeCycleId: null
-        }
-
-      case 'STOP_CYCLE':
-        return {
-          cycles: state.cycles.map(cycles => {
-            return cycles.id === state.activeCycleId
-              ? { ...cycles, interruptedDate: new Date() }
-              : cycles;
-          }),
-          activeCycleId: null
-        }
-
-      default:
-        return state
-    }
-  }, { cycles: [], activeCycleId: null })
+  const [cyclesState, dispatch] = useReducer(cyclesReducer, { cycles: [], activeCycleId: null })
 
   const [secondsPassed, setSecondsPassed] = useState(0);
 
@@ -81,13 +37,13 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
       date: new Date()
     };
 
-    dispatch({ type: 'ADD_CYCLE', payload: { newCycle } });
+    dispatch({ type: CycleActions.ADD_CYCLE, payload: { newCycle } });
     setSecondsPassed(0);
   }
 
-  function finishCycle() { dispatch({ type: 'FINISH_CYCLE' }) }
+  function finishCycle() { dispatch({ type: CycleActions.FINISH_CYCLE }) }
 
-  function interruptCycle() { dispatch({ type: 'STOP_CYCLE' }) }
+  function interruptCycle() { dispatch({ type: CycleActions.STOP_CYCLE }) }
 
   function setSecondsPassedProxy(n: number) { setSecondsPassed(n) }
 
