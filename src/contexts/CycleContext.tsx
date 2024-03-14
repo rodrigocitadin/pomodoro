@@ -47,8 +47,6 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
     setCycles(state => [...state, newCycle]);
     setActiveCycleId(id);
     setSecondsPassed(0);
-
-    reset();
   }
 
   function finishCycle() {
