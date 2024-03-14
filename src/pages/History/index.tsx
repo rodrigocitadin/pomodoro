@@ -11,11 +11,6 @@ export default function History() {
       <h1>
         My History
       </h1>
-
-      {/* <pre> */}
-      {/*   {JSON.stringify(cycles, null,2)} */}
-      {/* </pre> */}
-
       <HistoryList>
         <table>
           <thead>
