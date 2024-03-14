@@ -1,3 +1,5 @@
+import { CycleActions } from "./actions"
+
 export interface Cycle {
   id: string
   task: string
@@ -7,16 +9,11 @@ export interface Cycle {
   finishedDate?: Date
 }
 
-interface CyclesState {
+export interface CyclesState {
   cycles: Cycle[]
   activeCycleId: string | null
 }
 
-export enum CycleActions {
-  ADD_CYCLE = 'ADD_CYCLE',
-  FINISH_CYCLE = 'FINISH_CYCLE',
-  STOP_CYCLE = 'STOP_CYCLE'
-}
 
 interface Actions {
   type: CycleActions,
