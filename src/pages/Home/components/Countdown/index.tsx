@@ -1,11 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { CountdownContainer, Separator } from "./styles";
 import { CyclesContext } from "../..";
 import { differenceInSeconds } from "date-fns";
 
 export default function Countdown() {
-  const { activeCycle, finishCurrentCycle } = useContext(CyclesContext);
-  const [secondsPassed, setSecondsPassed] = useState(0);
+  const {
+    activeCycle,
+    finishCurrentCycle,
+    secondsPassed,
+    setSecondsPassedProxy
+  } = useContext(CyclesContext);
 
   const timeInSec = activeCycle ? activeCycle.timeInMin * 60 : 0;
   const currentTimeInSec = activeCycle ? timeInSec - secondsPassed : 0;
@@ -21,7 +25,7 @@ export default function Countdown() {
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setSecondsPassed(differenceInSeconds(new Date(), activeCycle.date));
+        setSecondsPassedProxy(differenceInSeconds(new Date(), activeCycle.date));
 
         if (currentTimeInSec <= 0) {
           finishCurrentCycle();
