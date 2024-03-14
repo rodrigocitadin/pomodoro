@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useReducer, useState } from "react"
 import { addCycleAction, finishCycleAction, stopCycleAction } from "../reducers/cycles/actions"
 import cyclesReducer, { Cycle } from "../reducers/cycles/reducer"
 import { cycleContext } from "./contexts"
+import { differenceInSeconds } from "date-fns"
 
 export interface CycleData {
   task: string
@@ -14,11 +15,15 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
 
     if (stateFromStore) return JSON.parse(stateFromStore);
   })
-  const [secondsPassed, setSecondsPassed] = useState(0);
-  const CycleContext = cycleContext
 
+  const CycleContext = cycleContext
   const { activeCycleId, cycles } = cyclesState;
   const activeCycle = cycles.find(c => c.id === activeCycleId);
+
+  const [secondsPassed, setSecondsPassed] = useState(() => {
+    if (activeCycle) return differenceInSeconds(new Date(), activeCycle.date)
+    return 0
+  });
 
   function createNewCycle(data: CycleData) {
     const id = String(new Date().getTime());
