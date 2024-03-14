@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useReducer, useState } from "react"
+import { ReactNode, createContext, useEffect, useReducer, useState } from "react"
 import { addCycleAction, finishCycleAction, stopCycleAction } from "../reducers/cycles/actions"
 import cyclesReducer, { Cycle } from "../reducers/cycles/reducer"
 
@@ -22,7 +22,6 @@ export const CycleContext = createContext({} as CycleContextType)
 
 export function CycleContextProvider({ children }: { children: ReactNode }) {
   const [cyclesState, dispatch] = useReducer(cyclesReducer, { cycles: [], activeCycleId: null })
-
   const [secondsPassed, setSecondsPassed] = useState(0);
 
   const { activeCycleId, cycles } = cyclesState;
@@ -47,6 +46,10 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
   function interruptCycle() { dispatch(stopCycleAction()) }
 
   function setSecondsPassedProxy(n: number) { setSecondsPassed(n) }
+
+  useEffect(() => {
+    localStorage.setItem('@pomodoro:cycles-state-1.0.0', JSON.stringify(cyclesState));
+  }, [cyclesState])
 
   return (
     <CycleContext.Provider value={{
