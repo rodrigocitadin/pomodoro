@@ -14,7 +14,6 @@ export interface CyclesState {
   activeCycleId: string | null
 }
 
-
 interface Actions {
   type: CycleActions,
   payload?: any
