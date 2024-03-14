@@ -6,7 +6,7 @@ import * as z from 'zod';
 import Countdown from "./components/Countdown";
 import NewCycleForm from "./components/NewCycleForm";
 import { useContext } from "react";
-import { CycleContext } from "../../contexts/CycleContext";
+import { cycleContext } from "../../contexts/contexts";
 
 const schema = z.object({
   task: z.string().min(1, 'Name your task'),
@@ -16,7 +16,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export default function Home() {
-  const { activeCycle, createNewCycle, interruptCycle } = useContext(CycleContext);
+  const { activeCycle, createNewCycle, interruptCycle } = useContext(cycleContext);
 
   const cycleForm = useForm({
     resolver: zodResolver(schema),

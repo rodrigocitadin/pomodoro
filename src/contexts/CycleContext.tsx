@@ -1,28 +1,21 @@
-import { ReactNode, createContext, useEffect, useReducer, useState } from "react"
+import { ReactNode, useEffect, useReducer, useState } from "react"
 import { addCycleAction, finishCycleAction, stopCycleAction } from "../reducers/cycles/actions"
 import cyclesReducer, { Cycle } from "../reducers/cycles/reducer"
+import { cycleContext } from "./contexts"
 
 interface CycleData {
   task: string
   timeInMin: number
 }
 
-interface CycleContextType {
-  cycles: Cycle[]
-  activeCycle: Cycle | undefined
-  activeCycleId: string | null
-  secondsPassed: number
-  finishCycle: () => void
-  interruptCycle: () => void
-  createNewCycle: (c: CycleData) => void
-  setSecondsPassedProxy: (n: number) => void
-}
-
-export const CycleContext = createContext({} as CycleContextType)
-
 export function CycleContextProvider({ children }: { children: ReactNode }) {
-  const [cyclesState, dispatch] = useReducer(cyclesReducer, { cycles: [], activeCycleId: null })
+  const [cyclesState, dispatch] = useReducer(cyclesReducer, { cycles: [], activeCycleId: null }, () => {
+    const stateFromStore = localStorage.getItem('@pomodoro:cycles-state-1.0.0')
+
+    if (stateFromStore) return JSON.parse(stateFromStore);
+  })
   const [secondsPassed, setSecondsPassed] = useState(0);
+  const CycleContext = cycleContext
 
   const { activeCycleId, cycles } = cyclesState;
   const activeCycle = cycles.find(c => c.id === activeCycleId);

@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { HistoryContainer, HistoryList, Status } from "./styles";
-import { CycleContext } from "../../contexts/CycleContext";
+import { cycleContext } from "../../contexts/contexts";
 import { formatDistanceToNow } from "date-fns";
 
 export default function History() {
-  const { cycles, activeCycleId } = useContext(CycleContext);
+  const { cycles, activeCycleId } = useContext(cycleContext);
 
   return (
     <HistoryContainer>
