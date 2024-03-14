@@ -1,10 +1,9 @@
 import { Play, Stop } from "phosphor-react";
-import { CountdownContainer, FormContainer, HomeContainer, MinutesAmountInput, Separator, StartCountdownButton, StopCountdownButton, TaskInput } from "./styles";
-import { useForm } from "react-hook-form";
+import { HomeContainer, StartCountdownButton, StopCountdownButton } from "./styles";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from 'zod';
-import { useEffect, useState } from "react";
-import { differenceInSeconds } from "date-fns";
+import { createContext, useState } from "react";
 import Countdown from "./components/Countdown";
 import NewCycleForm from "./components/NewCycleForm";
 
@@ -24,12 +23,22 @@ interface Cycle {
   finishedDate?: Date
 }
 
+interface CycleContextType {
+  activeCycle: Cycle | undefined
+  activeCycleId: string | null
+  finishCurrentCycle: () => void
+  secondsPassed: number
+  setSecondsPassedProxy: (n: number) => void
+}
+
+export const CyclesContext = createContext({} as CycleContextType);
+
 export default function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]);
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
   const [secondsPassed, setSecondsPassed] = useState(0);
 
-  const { register, handleSubmit, watch, reset } = useForm({
+  const cycleForm = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       task: '',
@@ -37,6 +46,8 @@ export default function Home() {
       date: new Date()
     }
   });
+
+  const { handleSubmit, watch, reset } = cycleForm;
 
   function handleNewCycle(data: FormDataType) {
     const id = String(new Date().getTime());
@@ -56,18 +67,9 @@ export default function Home() {
   }
 
   const activeCycle = cycles.find(c => c.id === activeCycleId);
-  const timeInSec = activeCycle ? activeCycle.timeInMin * 60 : 0;
-  const currentTimeInSec = activeCycle ? timeInSec - secondsPassed : 0;
-
-  const minutes = Math.floor(currentTimeInSec / 60);
-  const seconds = currentTimeInSec % 60;
-
-  const minutesDisplay = String(minutes).padStart(2, '0');
-  const secondsDisplay = String(seconds).padStart(2, '0');
 
   const task = watch('task');
   const timeInMin = watch('timeInMin');
-
 
   function handleInterruptCycle() {
     setCycles(
@@ -80,56 +82,52 @@ export default function Home() {
     setActiveCycleId(null);
   }
 
+  function finishCurrentCycle() {
+    setCycles(state => state.map(state => {
+      console.log(state)
+      return state.id === activeCycleId
+        ? { ...state, finishedDate: new Date() }
+        : state;
+    }))
 
-  useEffect(() => {
-    let interval: number;
+    setActiveCycleId(null);
+  }
 
-    if (activeCycle) {
-      interval = setInterval(() => {
-        setSecondsPassed(differenceInSeconds(new Date(), activeCycle.date));
-
-        if (currentTimeInSec <= 0) {
-          setCycles(state => state.map(state => {
-            console.log(state)
-            return state.id === activeCycleId
-              ? { ...state, finishedDate: new Date() }
-              : state;
-          }))
-
-          setActiveCycleId(null);
-          clearInterval(interval);
-        }
-      }, 1000)
-    }
-
-    return () => clearInterval(interval);
-  }, [activeCycle, activeCycleId, currentTimeInSec])
-
-  useEffect(() => {
-    if (activeCycle) document.title = `${minutes}:${secondsDisplay} - Pomotimer`
-  }, [minutes, seconds, activeCycle])
+  function setSecondsPassedProxy(n: number) {
+    setSecondsPassed(n)
+  }
 
   return (
     <HomeContainer>
-      <NewCycleForm />
+      <form onSubmit={handleSubmit(handleNewCycle)}>
+        <CyclesContext.Provider
+          value={{
+            activeCycle, 
+            activeCycleId, 
+            finishCurrentCycle, 
+            secondsPassed,
+            setSecondsPassedProxy
+          }}
+        >
+          <FormProvider {...cycleForm}>
+            <NewCycleForm />
+          </FormProvider>
+          <Countdown />
+        </CyclesContext.Provider>
 
-      <Countdown
-        minutesDisplay={minutesDisplay}
-        secondsDisplay={secondsDisplay}
-      />
-
-      {
-        activeCycle
-          ? (
-            <StopCountdownButton onClick={handleInterruptCycle} type="button">
-              <Stop size={28} />
-            </StopCountdownButton>
-          ) : (
-            <StartCountdownButton disabled={!(task && timeInMin)} type="submit">
-              <Play size={28} />
-            </StartCountdownButton>
-          )
-      }
+        {
+          activeCycle
+            ? (
+              <StopCountdownButton onClick={handleInterruptCycle} type="button">
+                <Stop size={28} />
+              </StopCountdownButton>
+            ) : (
+              <StartCountdownButton disabled={!(task && timeInMin)} type="submit">
+                <Play size={28} />
+              </StartCountdownButton>
+            )
+        }
+      </form>
     </HomeContainer >
   );
 }
