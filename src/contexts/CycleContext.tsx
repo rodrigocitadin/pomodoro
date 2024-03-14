@@ -1,5 +1,6 @@
 import { ReactNode, createContext, useReducer, useState } from "react"
-import cyclesReducer, { Cycle, CycleActions } from "../reducers/cycles"
+import { addCycleAction, finishCycleAction, stopCycleAction } from "../reducers/cycles/actions"
+import cyclesReducer, { Cycle } from "../reducers/cycles/reducer"
 
 interface CycleData {
   task: string
@@ -37,13 +38,13 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
       date: new Date()
     };
 
-    dispatch({ type: CycleActions.ADD_CYCLE, payload: { newCycle } });
+    dispatch(addCycleAction(newCycle));
     setSecondsPassed(0);
   }
 
-  function finishCycle() { dispatch({ type: CycleActions.FINISH_CYCLE }) }
+  function finishCycle() { dispatch(finishCycleAction()) }
 
-  function interruptCycle() { dispatch({ type: CycleActions.STOP_CYCLE }) }
+  function interruptCycle() { dispatch(stopCycleAction()) }
 
   function setSecondsPassedProxy(n: number) { setSecondsPassed(n) }
 
