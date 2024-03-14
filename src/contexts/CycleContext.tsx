@@ -10,10 +10,11 @@ export interface CycleData {
 }
 
 export function CycleContextProvider({ children }: { children: ReactNode }) {
-  const [cyclesState, dispatch] = useReducer(cyclesReducer, { cycles: [], activeCycleId: null }, () => {
+  const [cyclesState, dispatch] = useReducer(cyclesReducer, { cycles: [], activeCycleId: null }, (initialState) => {
     const stateFromStore = localStorage.getItem('@pomodoro:cycles-state-1.0.0')
 
     if (stateFromStore) return JSON.parse(stateFromStore);
+    return initialState
   })
 
   const CycleContext = cycleContext
