@@ -9,7 +9,7 @@ import NewCycleForm from "./components/NewCycleForm";
 
 const schema = z.object({
   task: z.string().min(1, 'Name your task'),
-  timeInMin: z.number().min(5).max(60)
+  timeInMin: z.number().min(1).max(60)
 });
 
 type FormDataType = z.infer<typeof schema>;
