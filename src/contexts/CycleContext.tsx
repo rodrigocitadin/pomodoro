@@ -3,7 +3,7 @@ import { addCycleAction, finishCycleAction, stopCycleAction } from "../reducers/
 import cyclesReducer, { Cycle } from "../reducers/cycles/reducer"
 import { cycleContext } from "./contexts"
 
-interface CycleData {
+export interface CycleData {
   task: string
   timeInMin: number
 }

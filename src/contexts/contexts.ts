@@ -1,10 +1,6 @@
 import { createContext } from "react";
 import { Cycle } from "../reducers/cycles/reducer";
-
-interface CycleData {
-  task: string
-  timeInMin: number
-}
+import { CycleData } from "./CycleContext";
 
 interface CycleContextType {
   cycles: Cycle[]
