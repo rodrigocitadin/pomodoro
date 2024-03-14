@@ -62,7 +62,7 @@ export const HistoryList = styled.div`
 `
 
 const STATUS_KIND = {
-  paused: 'yellow-500',
+  inProgress: 'yellow-500',
   done: 'green-500',
   stopped: 'red-500',
 } as const

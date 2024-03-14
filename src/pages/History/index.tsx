@@ -3,18 +3,17 @@ import { HistoryContainer, HistoryList, Status } from "./styles";
 import { CycleContext } from "../../contexts/CycleContext";
 
 export default function History() {
-  const { cycles } = useContext(CycleContext);
+  const { cycles, activeCycleId } = useContext(CycleContext);
 
   return (
-
     <HistoryContainer>
       <h1>
         My History
       </h1>
 
-      <pre>
-        {JSON.stringify(cycles, null,2)}
-      </pre>
+      {/* <pre> */}
+      {/*   {JSON.stringify(cycles, null,2)} */}
+      {/* </pre> */}
 
       <HistoryList>
         <table>
@@ -27,24 +26,22 @@ export default function History() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Task name</td>
-              <td>20 minutes</td>
-              <td>2 months ago</td>
-              <td><Status kind="done">Finished</Status></td>
-            </tr>
-            <tr>
-              <td>Task name</td>
-              <td>30 minutes</td>
-              <td>4 months ago</td>
-              <td><Status kind="paused">Paused</Status></td>
-            </tr>
-            <tr>
-              <td>Task name</td>
-              <td>15 minutes</td>
-              <td>7 months ago</td>
-              <td><Status kind="stopped">Stopped</Status></td>
-            </tr>
+            {
+              cycles.map(c => {
+                return (
+                  <tr key={c.id}>
+                    <td>{c.task}</td>
+                    <td>{c.timeInMin} minutes</td>
+                    <td>{c.date.toISOString()}</td>
+                    <td>
+                      {c.finishedDate && <Status kind="done">Finished</Status>}
+                      {c.interruptedDate && <Status kind="stopped">Stopped</Status>}
+                      {c.id === activeCycleId && <Status kind="inProgress">In Progress</Status>}
+                    </td>
+                  </tr>
+                )
+              })
+            }
           </tbody>
         </table>
       </HistoryList>
