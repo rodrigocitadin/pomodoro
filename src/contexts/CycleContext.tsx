@@ -19,8 +19,8 @@ interface CycleContextType {
   activeCycle: Cycle | undefined
   activeCycleId: string | null
   secondsPassed: number
-  finishCurrentCycle: () => void
-  handleInterruptCycle: () => void
+  finishCycle: () => void
+  interruptCycle: () => void
   createNewCycle: (c: CycleData) => void
   setSecondsPassedProxy: (n: number) => void
 }
@@ -51,7 +51,7 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
     reset();
   }
 
-  function finishCurrentCycle() {
+  function finishCycle() {
     setCycles(state => state.map(state => {
       console.log(state)
       return state.id === activeCycleId
@@ -62,7 +62,7 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
     setActiveCycleId(null);
   }
 
-  function handleInterruptCycle() {
+  function interruptCycle() {
     setCycles(
       cycles.map(state => {
         if (state.id === activeCycleId) return { ...state, interruptedDate: new Date() };
@@ -82,10 +82,10 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
       cycles,
       activeCycle,
       activeCycleId,
-      finishCurrentCycle,
+      finishCycle,
       secondsPassed,
       setSecondsPassedProxy,
-      handleInterruptCycle,
+      interruptCycle,
       createNewCycle
     }}>
       {children}
