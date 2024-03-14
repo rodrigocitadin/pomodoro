@@ -75,7 +75,7 @@ export function CycleContextProvider({ children }: { children: ReactNode }) {
       date: new Date()
     };
 
-    dispatch({ type: 'ADD_CYCLE', payload: newCycle });
+    dispatch({ type: 'ADD_CYCLE', payload: { newCycle } });
     setSecondsPassed(0);
   }
 
